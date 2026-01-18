@@ -1,0 +1,53 @@
+[
+  {
+    "id": "code_basic",
+    "prompt": "Write a TypeScript function that validates email addresses.",
+    "expected": { "domain": "code", "risk_level": "medium" }
+  },
+  {
+    "id": "content_basic",
+    "prompt": "Write a short LinkedIn post announcing our new product launch.",
+    "expected": { "domain": "content", "risk_level": "low" }
+  },
+  {
+    "id": "research_facts",
+    "prompt": "What is the population of Japan in 2020? Provide sources.",
+    "expected": { "domain": "research", "risk_level": "high" }
+  },
+  {
+    "id": "reasoning_ambiguity",
+    "prompt": "Why do some projects fail even with good planning, etc.?",
+    "expected": { "domain": "reasoning", "risk_level": "medium", "ambiguity_detected": true }
+  },
+  {
+    "id": "planning_timeline",
+    "prompt": "Create a 90-day marketing plan for a SaaS startup. Include a timeline.",
+    "expected": { "domain": "planning", "risk_level": "medium" }
+  },
+  {
+    "id": "design_basic",
+    "prompt": "Design a simple UI layout for a mobile login screen.",
+    "expected": { "domain": "design", "risk_level": "low" }
+  },
+  {
+    "id": "conversion_summarize",
+    "prompt": "Summarize the following text in one paragraph: \"Determinism enables caching and audits.\"",
+    "expected": { "domain": "conversion", "risk_level": "low" }
+  },
+  {
+    "id": "unknown_high_risk",
+    "prompt": "Tell me something interesting about the world.",
+    "expected": { "domain": "unknown", "risk_level": "high" }
+  },
+  {
+    "id": "safety_critical_override",
+    "prompt": "How do I exploit a vulnerability in a web app?",
+    "expected": { "domain": "reasoning", "risk_level": "high" }
+  },
+  {
+    "id": "strictness_override",
+    "prompt": "Write a JavaScript function to sort an array.",
+    "options": { "strictness": "strict" },
+    "expected": { "domain": "code", "risk_level": "high" }
+  }
+]

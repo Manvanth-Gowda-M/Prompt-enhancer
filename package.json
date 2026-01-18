@@ -1,7 +1,7 @@
 {
-  "name": "prompt-enhancer-mcp",
+  "name": "prompt-reliability-mcp",
   "version": "1.0.0",
-  "description": "MCP server that transforms raw prompts into high-quality, structured LLM-optimized prompts",
+  "description": "MCP server that transforms raw prompts into semantically equivalent, hallucination-resistant, deterministic enhanced prompts",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
