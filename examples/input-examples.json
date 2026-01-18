@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Simple Function Request",
+    "prompt": "I need to write a function that validates email addresses"
+  },
+  {
+    "id": 2,
+    "name": "Strategic Question",
+    "prompt": "What's the best architecture for a real-time notification system?"
+  },
+  {
+    "id": 3,
+    "name": "Vague Implementation",
+    "prompt": "create a user authentication system"
+  },
+  {
+    "id": 4,
+    "name": "Analysis Request",
+    "prompt": "analyze the tradeoffs between SQL and NoSQL databases for an e-commerce platform"
+  },
+  {
+    "id": 5,
+    "name": "Optimization Request",
+    "prompt": "how can I make my API faster"
+  },
+  {
+    "id": 6,
+    "name": "Testing Question",
+    "prompt": "write unit tests for a shopping cart component in React"
+  },
+  {
+    "id": 7,
+    "name": "Minimal Prompt",
+    "prompt": "build a REST API"
+  },
+  {
+    "id": 8,
+    "name": "Detailed Implementation",
+    "prompt": "I need a TypeScript function that validates email addresses. It should be synchronous, no external libraries, and handle international domains."
+  }
+]
