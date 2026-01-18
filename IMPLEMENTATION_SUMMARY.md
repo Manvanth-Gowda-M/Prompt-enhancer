@@ -1,151 +1,56 @@
-# Implementation Summary
+# Implementation Summary — Prompt Reliability MCP Server (v1.0)
 
-## Project: MCP Prompt Refiner Server
+This repository implements a production-ready MCP server that acts as a **Prompt Reliability & Enhancement Layer**.
 
-### ✅ Completed Deliverables
+It does **not** execute tasks. It does **not** call external services. It deterministically transforms raw user prompts into structured prompts with fixed hallucination guards and an explicit semantic integrity contract.
 
-#### 1. Project Structure
-- ✅ Complete directory structure as specified
-- ✅ Source files organized in `src/` with subdirectories for `tools/` and `utils/`
-- ✅ Examples provided in `examples/` directory
-- ✅ TypeScript configuration with strict mode enabled
-- ✅ Proper `.gitignore` for Node.js projects
+## What’s Implemented
 
-#### 2. MCP Server Implementation (`src/server.ts`)
-- ✅ Uses `@modelcontextprotocol/sdk` with stdio transport
-- ✅ Registers single tool: `enhance_prompt`
-- ✅ Proper error handling and validation
-- ✅ Clean startup/shutdown hooks (SIGINT, SIGTERM)
-- ✅ Tool definition matches specification exactly
+### Tools
 
-#### 3. Enhancement Logic (`src/utils/prompt-logic.ts`)
-- ✅ 4-phase enhancement pipeline:
-  - Input Analysis Phase (structure detection, task type, domain level)
-  - Structural Inference Phase (ROLE, TASK, CONTEXT, CONSTRAINTS, OUTPUT FORMAT, QUALITY BAR)
-  - Optimization Phase (clarity, strength, specificity)
-  - Validation Phase (intent preservation, no hallucinations)
-- ✅ Deterministic, rule-based logic
-- ✅ No external API calls
-- ✅ Conservative assumptions when ambiguous
-- ✅ Language detection (TypeScript, Python, Java, Go, etc.)
-- ✅ Task type detection (implementation, decision-making, analysis, informational)
-- ✅ Domain-specific context extraction
+- `enhance_prompt`
+  - Input: `{ prompt, options? }`
+  - Output: `{ enhanced_prompt, metadata: { domain, risk_level, determinism_hash } }`
 
-#### 4. Type Definitions (`src/types.ts`)
-- ✅ `PromptStructure` interface with all 6 sections
-- ✅ `EnhancementResult` interface with metadata
-- ✅ `AnalysisResult` interface for internal processing
-- ✅ Full TypeScript type safety throughout
+- `classify_prompt`
+  - Input: `{ prompt }`
+  - Output: `{ domain, risk_level, ambiguity_detected }`
 
-#### 5. Tool Implementation (`src/tools/enhancer.ts`)
-- ✅ Input validation (10-5000 character limits)
-- ✅ Type-safe input checking
-- ✅ Clean execution interface
-- ✅ Proper error messages
+- `diff_prompt`
+  - Input: `{ prompt }`
+  - Output: `{ raw, enhanced, changes_made, metadata }`
 
-#### 6. Examples (`examples/`)
-- ✅ `input-examples.json` with 8 diverse test cases
-- ✅ `output-examples.json` with 4 detailed examples showing expected transformations
-- ✅ Covers implementation, decision-making, analysis, and optimization scenarios
+### Deterministic 7-Stage Pipeline
 
-#### 7. Documentation (`README.md`)
-- ✅ Clear problem statement
-- ✅ Installation instructions
-- ✅ Running the server (dev and production modes)
-- ✅ Connecting to MCP clients (Claude Desktop, VS Code, custom)
-- ✅ API reference with complete tool schema
-- ✅ Usage examples (Python, JavaScript, command line)
-- ✅ Design philosophy and decisions
-- ✅ Extensibility notes
-- ✅ Troubleshooting guide
-- ✅ Contributing guidelines
+1. **Domain & Risk Classification** (`src/classifier/domain_classifier.ts`)
+   - Deterministic, rule-based, first-match-wins order
+   - Risk overrides for safety-critical topics, factual/numbered requests, and strict mode
 
-#### 8. Build & Packaging
-- ✅ `package.json` with proper scripts (build, dev, start)
-- ✅ `tsconfig.json` with strict mode enabled
-- ✅ Build produces `dist/` with compiled JavaScript
-- ✅ `.gitignore` excludes node_modules, dist, build artifacts
-- ✅ MIT License included
+2. **Ambiguity Detection** (`src/enhancer/ambiguity_resolver.ts`)
+   - Conservative ambiguity heuristics
+   - Optional uncertainty-rule injection when ambiguity could affect correctness
 
-### ✅ Acceptance Criteria Verification
+3. **Constraint Synthesis** (`src/enhancer/constraint_synthesizer.ts`)
+   - Always preserves intent and forbids scope expansion
+   - Adds domain-specific constraints without inventing new requirements
 
-- ✅ MCP server runs and serves `enhance_prompt` tool
-- ✅ Tool accepts raw prompts and returns structured output
-- ✅ Output follows exact ROLE/TASK/CONTEXT/CONSTRAINTS/OUTPUT FORMAT/QUALITY BAR format
-- ✅ Enhancement logic preserves original intent
-- ✅ Deterministic output (same input → same output)
-- ✅ No external API calls or hallucinations
-- ✅ Comprehensive README with examples and setup
-- ✅ Code is clean, well-documented, and open-source ready
-- ✅ Type-safe TypeScript implementation
-- ✅ Example inputs and outputs provided
-- ✅ Ready for immediate use in production MCP workflows
+4. **Guard Injection** (`src/enhancer/hallucination_guard_injector.ts`)
+   - Fixed global guards (always)
+   - Fixed verification rules (always)
+   - High-risk verification additions (conditional)
 
-### 🧪 Testing Summary
+5. **Prompt Formatting** (`src/enhancer/prompt_formatter.ts`)
+   - Exactly 8 sections in strict order with `###` headers
 
-**All tests passed:**
-- ✅ TypeScript compilation (no errors)
-- ✅ Server startup
-- ✅ Tool listing
-- ✅ Tool execution with valid inputs
-- ✅ Input validation (rejects invalid inputs)
-- ✅ Determinism verification (same input → same output)
-- ✅ Output structure verification (all 6 sections present)
-- ✅ Multiple prompt types (implementation, decision-making, analysis)
+6. **Semantic Integrity Contract** (`src/constants.ts`)
+   - Mandatory clause preventing scope drift
 
-### 📊 Key Metrics
+7. **Determinism Hash** (`src/utils/determinism.ts`)
+   - `sha256(normalize(enhanced_prompt))`
+   - `normalize = unicode NFKC + trim + lowercase`
 
-- **Source files**: 5 TypeScript files
-- **Total lines of code**: ~650 lines (excluding comments and blank lines)
-- **Dependencies**: 1 production dependency (@modelcontextprotocol/sdk)
-- **Build time**: < 2 seconds
-- **Enhancement time**: < 1ms per prompt (synchronous)
-- **Prompt expansion ratio**: 15-30x (typical)
+## Notes
 
-### 🎯 Design Highlights
-
-1. **Deterministic Enhancement**: Uses only rule-based logic, no randomness
-2. **Intent Preservation**: Never adds requirements not implied by original prompt
-3. **Production Focus**: Assumes production-quality expectations by default
-4. **Domain Intelligence**: Recognizes 12+ programming languages, 4 task types
-5. **Conservative Approach**: Makes safe assumptions when ambiguous
-6. **Type Safety**: Full TypeScript coverage with strict compiler checks
-7. **Zero Latency**: No network calls, purely local processing
-8. **MCP Compliance**: Follows protocol specification exactly
-
-### 🚀 Ready for Production
-
-The project is complete, tested, and ready for immediate use in production MCP workflows. All acceptance criteria are met, and the implementation follows best practices for:
-
-- Code quality and maintainability
-- Type safety and error handling
-- Documentation and examples
-- Open-source distribution
-- MCP protocol compliance
-
-### 📝 Usage Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Run the server
-npm start
-
-# Or run in development mode
-npm run dev
-```
-
-### 🔗 Integration with MCP Clients
-
-The server is ready to be integrated with:
-- Claude Desktop (macOS and Windows)
-- VS Code / Cursor with MCP support
-- Custom Node.js clients
-- Python clients
-- Any MCP-compatible tool using stdio transport
-
-See the README.md for detailed integration instructions and code examples.
+- The server uses MCP stdio transport (`src/server.ts`).
+- TypeScript is compiled to `dist/` via `npm run build`.
+- Example prompts and expected classifications live in `examples/`.
